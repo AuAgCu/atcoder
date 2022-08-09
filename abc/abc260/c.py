@@ -2,10 +2,9 @@ def convert(X, Y, n, red, blue):
     if n == 1:
         return red, blue
     
-    next_red = red
     blue += red * X
 
-    next_red += blue
+    next_red = blue + red
     next_blue = blue * Y
 
     return convert(X, Y, n - 1, next_red, next_blue)
