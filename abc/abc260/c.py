@@ -12,4 +12,4 @@ def convert(X, Y, n, red, blue):
 N, X, Y = map(int, input().split())
 
 red, blue = convert(X, Y, N, 1, 0)
-print(blue)
+print(red, blue)
