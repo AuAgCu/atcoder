@@ -2,7 +2,6 @@ N, W = map(int, input().split())
 a = list(map(int, input().split()))
 
 s = set()
-
 for i in range(N):
     s.add(a[i])
     for j in range(i+1, N):
