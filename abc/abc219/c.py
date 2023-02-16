@@ -15,11 +15,33 @@ for i in range(len(s)):
     dic[c_r] = c
     dic_reverse[c] = c_r
 
+# 方針: 与えられた文字列を一旦変換し、いつものソート関数が使えるようにする
+# 入力例1: 
+# abcdefghijklmnopqrstuvwxyz
+
+# bacdefghijklmnopqrstuvwxzy
+
+# abx → bax
+# bzz → ayy
+# bzy → ayz
+# caa → cbb
+
+# 変換後のものを使ってソートする
+# ayy
+# ayz
+# bax
+# cbb
+
+# 変換した名前を元に戻す。
+# azz → bzz
+# azy → bzy
+# bax → abx
+# caa → cbb
+
 names = []
 N = int(input())
 for _ in range(N):
     name = input()
-
     coverted_name = ''.join(map(lambda x: dic[x], name))
     names.append(coverted_name)
 
