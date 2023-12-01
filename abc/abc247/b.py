@@ -10,6 +10,7 @@ for i in range(n):
     dic.setdefault(last, 0)
 
     dic[first] += 1
+    dic[last] += 1
 
     if first != last:
         dic[last] += 1
@@ -20,8 +21,3 @@ for v in names:
         exit()
 
 print("Yes")
-
-
-# tanaka taro
-# tanaka jiro
-# suzuki hanako
