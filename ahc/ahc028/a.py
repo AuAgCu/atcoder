@@ -1,8 +1,7 @@
 import sys
 import time
 import copy
-
-
+import random
 
 debug = False
 def p(*arr):
@@ -10,44 +9,55 @@ def p(*arr):
     print(*arr)
 
 def ans_print(saiteki):
-  p(saiteki)
   for v in saiteki:
     print(v[1], v[2])
 
+def low_cost(s, arr):
+  if len(s) == len(arr) - 1:
+    return arr
+
+  sum_cost, px, py = arr[-1]
+  c = s[len(arr) - 1]
+  cost = sys.maxsize
+  for v in dic[c]:
+    x, y = v
+    t_cost = abs(px - x) + abs(py - y) + 1
+
+    if cost > t_cost:
+      cost = t_cost
+      tx, ty = x, y
+
+  sum_cost += cost
+  arr.append((sum_cost, tx, ty))
+  return low_cost(s, arr)
+
+def ans_first(s, dic):
+  return low_cost(s, [(0, S1, S2)])
+
 def point(s, dic):
-  px, py = S1, S2
-
   max_cost = sys.maxsize
-  saiteki = []
-  while True:
-    end = time.time()
-    diff = end - start
+  saiteki = ans_first(s, dic)
+  while time.time() - start < 1.95:
+    sum_cost, _, _ = saiteki[-1]
     
-    if diff > 1.95:
-      # ここに出力する処理を書く
-      ans_print(saiteki)
-      sys.exit(0)
+    index = random.randrange(len(s))
+    c = s[index]
+    for position in dic[c]:
+      arr = copy.deepcopy(saiteki[:index])
+      cost, x, y = arr[-1]
+      nx, ny = position
 
-    sum_cost = 0
-    pr = []
-    for c in s:
-      cost = sys.maxsize
-      for v in dic[c]:
-        x, y = v
-        t_cost = abs(px - x) + abs(py - y) + 1
+      n_cost = cost + abs(nx - x) + abs(ny - y) + 1
+      arr.append((n_cost, nx, ny))
+      tmp = low_cost(s, arr)
 
-        if cost > t_cost:
-          cost = t_cost
-          tx, ty = x, y
-        
-      sum_cost += cost
-      pr.append((sum_cost, tx, ty))
-      px, py = tx, ty
+      p('newCost:', tmp[-1][0])
+      p('nowCost:', sum_cost)
+      if tmp[-1][0] < sum_cost:
+        saiteki = tmp
+        sum_cost = tmp[-1][0]
 
-    if sum_cost < max_cost:
-      saiteki = pr
-      p(saiteki)
-      max_cost = sum_cost
+  ans_print(saiteki)
       
 N, M = map(int, input().split())
 S1, S2 = map(int, input().split())
@@ -103,7 +113,6 @@ for i in range(1, M):
       s2 = s[-word_l + k:]
 
       if s1 == s2 and mc < len(s1):
-        p(s1, s2, words[j])
         mc = max(mc, len(s1))
         head = False
         break
@@ -113,7 +122,6 @@ for i in range(1, M):
       selected = j
       is_head = head
 
-  p(max_cover, words[selected], s[:5], s[-5:], i, selected, is_head)
   words[i], words[selected] = words[selected], words[i]
   if is_covered:
     pass
@@ -122,6 +130,4 @@ for i in range(1, M):
   else:
     s += words[i][max_cover:]
       
-p(s)
-p(len(s))
 point(s, dic)
