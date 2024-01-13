@@ -62,58 +62,66 @@ def point(s, dic):
   ans_print(saiteki)
 
 def makeS(o_words):
-  s = words[0]
-  for i in range(1, M):
-    selected = i
-    max_cover = 0
-    is_head = True
-    is_covered = False
-    for j in range(i, M):
-      # 文字列が既に存在する場合は選択
-      if words[j] in s:
-        selected = j
-        is_covered = True
-        break
-
-      # とりあえず重なりが大きいものを選択していく
-      # まず先頭
-      mc = 0
-      head = True
-      for k in range(1, word_l):
-        if mc >= word_l - k:
+  max_l = sys.maxsize
+  ans = ''
+  for _ in range(20):
+    words = random.sample(o_words, len(o_words))
+    s = words[0]
+    for i in range(1, M):
+      selected = i
+      max_cover = 0
+      is_head = True
+      is_covered = False
+      for j in range(i, M):
+        # 文字列が既に存在する場合は選択
+        if words[j] in s:
+          selected = j
+          is_covered = True
           break
 
-        s1 = words[j][k:]
-        s2 = s[:len(s1)]
-        if s1 == s2 and mc < len(s1):
-          mc = max(mc, len(s1))
-          break
+        # とりあえず重なりが大きいものを選択していく
+        # まず先頭
+        mc = 0
+        head = True
+        for k in range(1, word_l):
+          if mc >= word_l - k:
+            break
 
-      # 後ろから
-      for k in range(1, word_l):
-        if mc >= word_l - k:
-          break
+          s1 = words[j][k:]
+          s2 = s[:len(s1)]
+          if s1 == s2 and mc < len(s1):
+            mc = max(mc, len(s1))
+            break
 
-        s1 = words[j][:word_l - k]
-        s2 = s[-word_l + k:]
+        # 後ろから
+        for k in range(1, word_l):
+          if mc >= word_l - k:
+            break
 
-        if s1 == s2 and mc < len(s1):
-          mc = max(mc, len(s1))
-          head = False
-          break
+          s1 = words[j][:word_l - k]
+          s2 = s[-word_l + k:]
 
-      if max_cover < mc:
-        max_cover = mc
-        selected = j
-        is_head = head
+          if s1 == s2 and mc < len(s1):
+            mc = max(mc, len(s1))
+            head = False
+            break
 
-    words[i], words[selected] = words[selected], words[i]
-    if is_covered:
-      pass
-    elif is_head:
-      s = words[i][:word_l - max_cover] + s
-    else:
-      s += words[i][max_cover:]
+        if max_cover < mc:
+          max_cover = mc
+          selected = j
+          is_head = head
+
+      words[i], words[selected] = words[selected], words[i]
+      if is_covered:
+        pass
+      elif is_head:
+        s = words[i][:word_l - max_cover] + s
+      else:
+        s += words[i][max_cover:]
+
+    if max_l > len(s):
+      ans = s
+      max_l = len(s)
 
   return s
       
