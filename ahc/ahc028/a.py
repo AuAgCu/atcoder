@@ -3,6 +3,8 @@ import time
 import copy
 import random
 
+word_l = 5
+
 debug = False
 def p(*arr):
   if debug:
@@ -43,7 +45,7 @@ def point(s, dic):
     index = random.randrange(len(s))
     c = s[index]
     for position in dic[c]:
-      arr = copy.deepcopy(saiteki[:index])
+      arr = copy.deepcopy(saiteki[:index + 1])
       cost, x, y = arr[-1]
       nx, ny = position
 
@@ -58,6 +60,62 @@ def point(s, dic):
         sum_cost = tmp[-1][0]
 
   ans_print(saiteki)
+
+def makeS(o_words):
+  s = words[0]
+  for i in range(1, M):
+    selected = i
+    max_cover = 0
+    is_head = True
+    is_covered = False
+    for j in range(i, M):
+      # 文字列が既に存在する場合は選択
+      if words[j] in s:
+        selected = j
+        is_covered = True
+        break
+
+      # とりあえず重なりが大きいものを選択していく
+      # まず先頭
+      mc = 0
+      head = True
+      for k in range(1, word_l):
+        if mc >= word_l - k:
+          break
+
+        s1 = words[j][k:]
+        s2 = s[:len(s1)]
+        if s1 == s2 and mc < len(s1):
+          mc = max(mc, len(s1))
+          break
+
+      # 後ろから
+      for k in range(1, word_l):
+        if mc >= word_l - k:
+          break
+
+        s1 = words[j][:word_l - k]
+        s2 = s[-word_l + k:]
+
+        if s1 == s2 and mc < len(s1):
+          mc = max(mc, len(s1))
+          head = False
+          break
+
+      if max_cover < mc:
+        max_cover = mc
+        selected = j
+        is_head = head
+
+    words[i], words[selected] = words[selected], words[i]
+    if is_covered:
+      pass
+    elif is_head:
+      s = words[i][:word_l - max_cover] + s
+    else:
+      s += words[i][max_cover:]
+
+  return s
       
 N, M = map(int, input().split())
 S1, S2 = map(int, input().split())
@@ -76,58 +134,7 @@ for _ in range(M):
   words.append(input())
 
 start = time.time()
-word_l = 5
-s = words[0]
-for i in range(1, M):
-  selected = i
-  max_cover = 0
-  is_head = True
-  is_covered = False
-  for j in range(i, M):
-    # 文字列が既に存在する場合は選択
-    if words[j] in s:
-      selected = j
-      is_covered = True
-      break
 
-    # とりあえず重なりが大きいものを選択していく
-    # まず先頭
-    mc = 0
-    head = True
-    for k in range(1, word_l):
-      if mc >= word_l - k:
-        break
-
-      s1 = words[j][k:]
-      s2 = s[:len(s1)]
-      if s1 == s2 and mc < len(s1):
-        mc = max(mc, len(s1))
-        break
-
-    # 後ろから
-    for k in range(1, word_l):
-      if mc >= word_l - k:
-        break
-
-      s1 = words[j][:word_l - k]
-      s2 = s[-word_l + k:]
-
-      if s1 == s2 and mc < len(s1):
-        mc = max(mc, len(s1))
-        head = False
-        break
-
-    if max_cover < mc:
-      max_cover = mc
-      selected = j
-      is_head = head
-
-  words[i], words[selected] = words[selected], words[i]
-  if is_covered:
-    pass
-  elif is_head:
-    s = words[i][:word_l - max_cover] + s
-  else:
-    s += words[i][max_cover:]
+s = makeS(words)
       
 point(s, dic)
