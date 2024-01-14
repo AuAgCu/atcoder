@@ -34,30 +34,48 @@ def low_cost(s, arr):
   return low_cost(s, arr)
 
 def ans_first(s, dic):
-  return low_cost(s, [(0, S1, S2)])
+  beams = [(0, [(0, S1, S2)])]
+  L = 2
+  for c in s:
+    new_beams = []
+    for v in dic[c]:
+      for b in beams:
+        last_cost, px, py = b[1][-1]
+        x, y = v
+        cost = abs(px - x) + abs(py - y) + 1
+
+        new_cost = last_cost + cost
+        b[1].append((new_cost, x, y))
+        
+        new_beams.append((last_cost, copy.deepcopy(b[1])))
+
+    new_beams.sort()
+    beams = new_beams[:L]
+
+  return beams[0][1]
 
 def point(s, dic):
   max_cost = sys.maxsize
   saiteki = ans_first(s, dic)
-  while time.time() - start < 1.95:
-    sum_cost, _, _ = saiteki[-1]
+  # while time.time() - start < 1.95:
+  #   sum_cost, _, _ = saiteki[-1]
     
-    index = random.randrange(len(s))
-    c = s[index]
-    for position in dic[c]:
-      arr = copy.deepcopy(saiteki[:index + 1])
-      cost, x, y = arr[-1]
-      nx, ny = position
+  #   index = random.randrange(len(s))
+  #   c = s[index]
+  #   for position in dic[c]:
+  #     arr = copy.deepcopy(saiteki[:index + 1])
+  #     cost, x, y = arr[-1]
+  #     nx, ny = position
 
-      n_cost = cost + abs(nx - x) + abs(ny - y) + 1
-      arr.append((n_cost, nx, ny))
-      tmp = low_cost(s, arr)
+  #     n_cost = cost + abs(nx - x) + abs(ny - y) + 1
+  #     arr.append((n_cost, nx, ny))
+  #     tmp = low_cost(s, arr)
 
-      p('newCost:', tmp[-1][0])
-      p('nowCost:', sum_cost)
-      if tmp[-1][0] < sum_cost:
-        saiteki = tmp
-        sum_cost = tmp[-1][0]
+  #     p('newCost:', tmp[-1][0])
+  #     p('nowCost:', sum_cost)
+  #     if tmp[-1][0] < sum_cost:
+  #       saiteki = tmp
+  #       sum_cost = tmp[-1][0]
 
   ans_print(saiteki)
 
