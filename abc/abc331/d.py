@@ -1,9 +1,17 @@
 import math
 
+debug = True
+
+def p(*arr):
+    if not debug:
+        return
+    
+    print(arr)
+
 def array_print(arr):
     for v in arr:
-        print(v)
-        
+        p(v)
+
 N, Q = map(int, input().split())
 
 bw_arr = []
@@ -29,7 +37,7 @@ for i in range(len(imosu)):
 
 array_print(imosu)
 
-for i in range(Q):
+for i in range(1):
     a, b, c, d = map(int, input().split())
 
     ta = math.ceil(a / N) * N
@@ -38,42 +46,44 @@ for i in range(Q):
     td = (d + 1) // N * N
 
     # 四角形をまず計算
-    square = (tc - ta) * (td - tb) * imosu[-1][-1]
-    print('資格', square)
+    square = ((tc - ta) // N) * ((td - tb) // N) * imosu[-1][-1]
+    p('四角', square)
 
     # 余った左を計算
-    left = ((imosu[-1][-1] - imosu[-1][b % N])) * (tc - ta)
+    left = ((imosu[-1][-1] - imosu[-1][(b - 1) % N])) * (tc - ta) // N
+    p('左', left)
 
     # 余った右を計算
-    right = (imosu[-1][d % N]) * (tc - ta)
+    right = (imosu[-1][(d + 1) % N] - imosu[-1][td % N]) * (tc - ta) // N
+    p('右', right,(imosu[-1][(d + 1) % N]), imosu[-1][td % N])
 
     # 余った上を計算
-    up = ((imosu[-1][-1]) - (imosu[(a - 1) % N][-1])) * (td - tb)
+    up = ((imosu[-1][-1]) - (imosu[(a - 1) % N][-1])) * (td - tb) // N
+    p('上', up)
 
     # 余った下を計算
-    down = (imosu[c % N][-1])* (td - tb)
+    down = (imosu[c % N][-1])* (td - tb) // N
+    p('下', down)
 
     # 左上
     left_up = (imosu[-1][-1]) - (imosu[(a - 1) % N][-1]) - ((imosu[-1][(tb - 1) % N]) - (imosu[(a - 1) % N][b % N]))
-    print('左上', left_up, (imosu[-1][-1]) - (imosu[(a - 1) % N][-1]), ((imosu[-1][(tb - 1) % N]) - (imosu[(a - 1) % N][b % N])))
+    p('左上', left_up, (imosu[-1][-1]) - (imosu[(a - 1) % N][-1]), ((imosu[-1][(tb - 1) % N]) - (imosu[(a - 1) % N][b % N])))
 
     # 右上
     right_up = (imosu[-1][(d % N)] - imosu[(a - 1) % N][d % N])
-    print('右上', right_up, (-1, d % N), ((a - 1) % N, d % N))
+    p('右上', right_up, (-1, d % N), ((a - 1) % N, d % N))
 
     # 左下
     left_down = (imosu[c % N][-1] - imosu[c % N][(b - 1) % N])
-    print('左下', left_down, (c % N, -1), (c % N, (b - 1) % N))
+    p('左下', left_down, (c % N, -1), (c % N, (b - 1) % N))
 
     # 右下
     right_down = (imosu[c % N][d % N])
-    print('右下', right_down)
+    p('右下', right_down)
 
     ans = square + left + right + up + down + left_up + right_up + left_down + right_down
-    print(ta, tb, tc, td)
-    print('ans', ans)
-    
+    p(ta, tb, tc, td)
+    p('ans', ans)
 
-def array_print(arr):
-    for v in arr:
-        print(v)
+    print(ans)
+    
